@@ -1,0 +1,114 @@
+var canvas = document.getElementById("myCanvas");
+    var context = canvas.getContext("2d");
+var mouseX = 0;
+var mouseY = 0;
+ let food = [];
+canvas.addEventListener("mousemove", setMousePosition, false);
+ 
+ 
+function getPosition(el) {
+  var xPosition = 0;
+  var yPosition = 0;
+ 
+  while (el) {
+    xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+    yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
+    el = el.offsetParent;
+  }
+  return {
+    x: xPosition,
+    y: yPosition
+  };
+}
+var canvasPos = getPosition(canvas);
+class Food{
+constructor(){
+this.position={
+  x:Math.floor(Math.random()* 700),
+  y:Math.floor(Math.random()* 500)
+}
+
+this.h = 50;
+this.w = 50;
+this.r = 40;
+
+}
+draw(context){
+context.beginPath();
+context.arc(this.position.x, this.position.y, this.r, 0, 2 * Math.PI, true);
+  context.fillStyle = "blue";
+  context.stroke();
+  context.fill();
+
+
+}
+}
+class Blob{
+constructor(){
+this.position = {
+x : mouseX,
+y: mouseY
+}
+this.h = 50;
+this.w = 50;
+this.r = 50;
+this.stroke = {
+left : mouseX - radius,
+top : mouseY + radius,
+right : mouseX + radius,
+bottom : mouseY - radius
+
+}
+}
+draw(context){
+  context.beginPath();
+  context.arc(mouseX, mouseY, radius, 0, 2 * Math.PI, true);
+  context.fillStyle = "red";
+  context.stroke();
+  context.fill();
+}
+
+
+}
+let radius = 50;
+let blob = new Blob();
+let dog = new Food();
+dog.draw(context);
+
+function eat(){
+  if(mouseX + radius >= dog.position.x && mouseX < dog.position.x + radius && mouseY + radius >= dog.position.y && mouseY < dog.position.y + radius){
+radius += dog.r/(10*radius/dog.r);
+dog.position.x = Math.floor(Math.random()* 700);
+dog.position.y = Math.floor(Math.random()* 500);
+  }
+
+  }
+function followMouse(){
+var dx = blob.position.x - (mouseX + 50);
+blob.position.x += dx;
+
+}
+
+function setMousePosition(e) {
+  mouseX = e.clientX - canvasPos.x;
+  mouseY = e.clientY - canvasPos.y;
+}
+function update() {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+blob.stroke.right;
+dog.draw(context);
+blob.draw(context);
+
+  
+
+ followMouse();
+eat();
+  
+   
+  requestAnimationFrame(update);
+}    
+requestAnimationFrame(update);
+ setInterval (function(){
+  dog.draw(context);
+
+ }, 500)
